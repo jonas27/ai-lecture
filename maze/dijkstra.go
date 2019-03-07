@@ -10,8 +10,7 @@ func dijkstra() {
 	visited[r][c] = 0
 	if parallel {
 		fmt.Println("parallel")
-		wg.Add(1)
-		go searchParallel(1, r, c)
+		searchParallel(1, r, c)
 		wg.Wait()
 	} else {
 		search(1, r, c)
@@ -57,33 +56,40 @@ func searchParallel(counter int, r int, c int) {
 			visited[r-1][c] = counter
 		}
 		fmt.Println(wg)
-		fmt.Println("dasdasd")
 		wg.Add(1)
-		go search(counter+1, r-1, c)
-		wg.Done()
+		go func() {
+			search(counter+1, r-1, c)
+			wg.Done()
+		}()
 	}
 	if right(maze, visited, r, c, counter) {
 		if visited[r][c+1] > counter {
 			visited[r][c+1] = counter
 		}
 		wg.Add(1)
-		go search(counter+1, r, c+1)
-		wg.Done()
+		go func() {
+			search(counter+1, r, c+1)
+			wg.Done()
+		}()
 	}
 	if down(maze, visited, r, c, counter) {
 		if visited[r+1][c] > counter {
 			visited[r+1][c] = counter
 		}
 		wg.Add(1)
-		go search(counter+1, r+1, c)
-		wg.Done()
+		go func() {
+			search(counter+1, r+1, c)
+			wg.Done()
+		}()
 	}
 	if left(maze, visited, r, c, counter) {
 		if visited[r][c-1] > counter {
 			visited[r][c-1] = counter
 		}
 		wg.Add(1)
-		go search(counter+1, r, c-1)
-		wg.Done()
+		go func() {
+			search(counter+1, r, c-1)
+			wg.Done()
+		}()
 	}
 }
